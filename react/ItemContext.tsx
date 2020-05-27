@@ -6,6 +6,8 @@ interface Context {
   loading: boolean
   onQuantityChange: (value: number) => void
   onRemove: () => void
+  quantityButtons: boolean
+  selectorType: string
 }
 
 interface ItemContextProviderProps {

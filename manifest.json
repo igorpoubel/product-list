@@ -15,6 +15,7 @@
   "mustUpdateAt": "2019-04-02",
   "dependencies": {
     "vtex.styleguide": "9.x",
+    "vtex.store-icons": "0.x",
     "vtex.format-currency": "0.x",
     "vtex.formatted-price": "0.x",
     "vtex.flex-layout": "0.x",
