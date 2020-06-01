@@ -6,7 +6,8 @@ import {
   InjectedIntlProps,
   injectIntl,
 } from 'react-intl'
-import { Dropdown, Input } from 'vtex.styleguide'
+import { Dropdown, Input, Button } from 'vtex.styleguide'
+import { Icon } from 'vtex.store-icons'
 import { useCssHandles } from 'vtex.css-handles'
 
 const messages = defineMessages({
@@ -28,6 +29,8 @@ interface Props {
   value: number
   maxValue: number
   onChange: (value: number) => void
+  quantityButtons: boolean
+  selectorProp: string
   disabled: boolean
 }
 
@@ -80,19 +83,32 @@ const QuantitySelector: FunctionComponent<Props & InjectedIntlProps> = ({
   value,
   maxValue,
   onChange,
+  quantityButtons,
+  selectorProp,
   disabled,
   intl,
 }) => {
+  selectorProp === undefined && (selectorProp = 'dropdown')
+
   const [curSelector, setSelector] = useState(
-    value < 10 ? SelectorType.Dropdown : SelectorType.Input
+    value < 10 && selectorProp == 'dropdown'
+      ? SelectorType.Dropdown
+      : SelectorType.Input
   )
-  const [activeInput, setActiveInput] = useState(false)
+  const [activeInput, setActiveInput] = useState(
+    selectorProp == 'dropdown' ? false : true
+  )
 
   const normalizedValue = normalizeValue(value, maxValue)
 
   const [curDisplayValue, setDisplayValue] = useState(`${normalizedValue}`)
 
   const handles = useCssHandles(CSS_HANDLES)
+
+  // eslint-disable-next-line no-console
+  console.log(quantityButtons)
+  // eslint-disable-next-line no-console
+  console.log(selectorProp)
 
   const handleDropdownChange = (value: string) => {
     const validatedValue = validateValue(value, maxValue)
@@ -120,6 +136,19 @@ const QuantitySelector: FunctionComponent<Props & InjectedIntlProps> = ({
 
     const validatedValue = validateValue(curDisplayValue, maxValue)
     onChange(validatedValue)
+  }
+
+  /*
+  ACTIONS
+  0 -> SUM
+  1 -> SUBTRACTION
+  */
+  const handleButtonClick = (action: number) => {
+    const newValue = action
+      ? parseInt(curDisplayValue) - 1
+      : parseInt(curDisplayValue) + 1
+    setDisplayValue(newValue.toString())
+    onChange(newValue)
   }
 
   const handleInputFocus = () => setActiveInput(true)
@@ -167,7 +196,12 @@ const QuantitySelector: FunctionComponent<Props & InjectedIntlProps> = ({
   } else {
     return (
       <Fragment>
-        <div className={`${handles.quantityInputMobileContainer} dn-m`}>
+        <div className={`${handles.quantityInputMobileContainer} flex dn-m`}>
+          {quantityButtons && (
+            <Button size="small" onClick={() => handleButtonClick(1)}>
+              <Icon id="mpa-minus--line" viewBox="-2 -8 14 18" />
+            </Button>
+          )}
           <Input
             id={`quantity-input-mobile-${id}`}
             size="small"
@@ -179,8 +213,18 @@ const QuantitySelector: FunctionComponent<Props & InjectedIntlProps> = ({
             placeholder=""
             disabled={disabled}
           />
+          {quantityButtons && (
+            <Button size="small" onClick={() => handleButtonClick(0)}>
+              <Icon id="mpa-plus--line" viewBox="-2 -4 14 18" />
+            </Button>
+          )}
         </div>
-        <div className={`${handles.quantityInputContainer} dn db-m`}>
+        <div className={`${handles.quantityInputContainer} dn flex-m`}>
+          {quantityButtons && (
+            <Button size="small" onClick={() => handleButtonClick(1)}>
+              <Icon id="mpa-minus--line" viewBox="-2 -8 14 18" />
+            </Button>
+          )}
           <Input
             id={`quantity-input-${id}`}
             value={curDisplayValue}
@@ -191,6 +235,11 @@ const QuantitySelector: FunctionComponent<Props & InjectedIntlProps> = ({
             placeholder=""
             disabled={disabled}
           />
+          {quantityButtons && (
+            <Button size="small" onClick={() => handleButtonClick(0)}>
+              <Icon id="mpa-plus--line" viewBox="-2 -4 14 18" />
+            </Button>
+          )}
         </div>
       </Fragment>
     )

@@ -11,6 +11,8 @@ interface Props {
   loading: boolean
   onQuantityChange: (uniqueId: string, value: number, item?: Item) => void
   onRemove: (uniqueId: string, item?: Item) => void
+  quantityButtons: boolean
+  selectorType: string
 }
 
 const CSS_HANDLES = [
@@ -25,6 +27,8 @@ const ProductList: StorefrontFunctionComponent<Props> = ({
   onQuantityChange,
   onRemove,
   children,
+  quantityButtons,
+  selectorType,
 }) => {
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -46,6 +50,8 @@ const ProductList: StorefrontFunctionComponent<Props> = ({
           onQuantityChange: (value: number) =>
             onQuantityChange(item.uniqueId, value, item),
           onRemove: () => onRemove(item.uniqueId, item),
+          quantityButtons,
+          selectorType,
         }}
       >
         <div className={`${handles.productListItem} c-on-base bb b--muted-4`}>
